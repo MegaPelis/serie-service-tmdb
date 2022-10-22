@@ -1,8 +1,8 @@
 package com.megapelis.serie;
 
-import com.megapelis.serie.factory.SerieFactory;
-import com.megapelis.serie.model.dto.request.generic.Request;
-import com.megapelis.serie.model.dto.response.generic.Response;
+import com.megapelis.serie.api.factory.SerieFactory;
+import com.megapelis.serie.api.model.dto.request.generic.Request;
+import com.megapelis.serie.api.model.dto.response.generic.Response;
 
 /**
  * Hello world!
