@@ -4,8 +4,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.megapelis.serie</groupId>
-  <name>serie-service</name>
-  <artifactId>serie-service</artifactId>
+  <name>serie-service-tmdb</name>
+  <artifactId>serie-service-tmdb</artifactId>
   <version>1.0.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <url>http://maven.apache.org</url>
@@ -50,7 +50,7 @@
 
   <!-- Build -->
   <build>
-    <finalName>serie-service</finalName>
+    <finalName>serie-service-tmdb</finalName>
     <sourceDirectory>src/main/java</sourceDirectory>
     <plugins>
       <plugin>

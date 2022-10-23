@@ -20,11 +20,4 @@ public class Request implements Serializable {
     private String operation;
     private List<RequestProperty> properties;
     private Object data;
-
-    public List<RequestProperty> getProperties(){
-        if(null == properties){
-            properties = new ArrayList<RequestProperty>();
-        }
-        return  properties;
-    }
 }
