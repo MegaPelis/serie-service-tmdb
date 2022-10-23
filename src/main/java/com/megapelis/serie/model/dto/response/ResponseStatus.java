@@ -1,4 +1,4 @@
-package com.megapelis.serie.api.model.dto.response.generic;
+package com.megapelis.serie.model.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,10 @@ import lombok.Setter;
 
 import java.io.Serializable;
 
+/**
+ * Clase {@link ResponseStatus}
+ * @author sergio.barrios.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

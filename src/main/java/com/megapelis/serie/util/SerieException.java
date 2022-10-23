@@ -1,6 +1,6 @@
 package com.megapelis.serie.util;
 
-import com.megapelis.serie.api.model.enums.StatusEnum;
+import com.megapelis.serie.model.enums.SerieStatusEnum;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -11,9 +11,9 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SerieException extends Exception{
-    private StatusEnum status;
+    private SerieStatusEnum status;
 
-    public SerieException(StatusEnum status){
+    public SerieException(SerieStatusEnum status){
         super(status.getMessageBackend());
         this.status = status;
     }

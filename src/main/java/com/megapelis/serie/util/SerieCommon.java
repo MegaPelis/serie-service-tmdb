@@ -1,25 +1,29 @@
 package com.megapelis.serie.util;
 
 import com.google.gson.Gson;
-import com.megapelis.serie.api.model.dto.request.generic.Request;
-import com.megapelis.serie.api.model.dto.request.generic.RequestProperty;
-import com.megapelis.serie.api.model.dto.response.generic.Response;
-import com.megapelis.serie.api.model.dto.response.generic.ResponseStatus;
-import com.megapelis.serie.api.model.entity.TMDB;
-import com.megapelis.serie.api.model.enums.StatusEnum;
+import com.megapelis.serie.model.dto.request.generic.Request;
+import com.megapelis.serie.model.dto.request.generic.RequestProperty;
+import com.megapelis.serie.model.dto.response.Response;
+import com.megapelis.serie.model.dto.response.ResponseStatus;
+import com.megapelis.serie.model.entity.TMDB;
+import com.megapelis.serie.model.entity.TMDBUrl;
+import com.megapelis.serie.model.enums.SerieStatusEnum;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Clase {@link CommonSerie}
+ * Clase {@link SerieCommon}
  * @author sergio.barrios.
  */
-public class CommonSerie {
+public class SerieCommon {
 
-    private CommonSerie(){}
+    private SerieCommon(){}
 
     /**
      * Metodo que permite validar una cadena no este vacia.
@@ -38,10 +42,10 @@ public class CommonSerie {
     public static boolean isValidString(String ... values) {
         for (String value : values) {
             if (!isValidString(value)) {
-                return ConstantSerie.BOOLEAN_FALSE;
+                return SerieConstant.BOOLEAN_FALSE;
             }
         }
-        return ConstantSerie.BOOLEAN_TRUE;
+        return SerieConstant.BOOLEAN_TRUE;
     }
 
     /**
@@ -50,8 +54,15 @@ public class CommonSerie {
      * @throws SerieException
      */
     public static void isValidRequest(Request request) throws SerieException{
+        boolean isError = SerieConstant.BOOLEAN_FALSE;
         if(null == request || !isValidString(request.getTraceId(), request.getDateTime(), request.getService(), request.getOperation()))
-            throw new SerieException(StatusEnum.ERROR_FORMAT_REQUEST);
+            isError = SerieConstant.BOOLEAN_TRUE;
+        if(!request.getService().equalsIgnoreCase(SerieConstant.STRING_SERVICE_NAME))
+            isError = SerieConstant.BOOLEAN_TRUE;
+        if(request.getService().equalsIgnoreCase(request.getOperation()))
+            isError = SerieConstant.BOOLEAN_TRUE;
+        if(isError)
+            throw new SerieException(SerieStatusEnum.ERROR_FORMAT_REQUEST);
     }
 
     /**
@@ -59,8 +70,8 @@ public class CommonSerie {
      * @return {@link String}
      */
     public static String getDateTime(){
-        return ZonedDateTime.now(ZoneId.of(ConstantSerie.STRING_DATE_ZONE))
-                .format(DateTimeFormatter.ofPattern(ConstantSerie.STRING_DATE_TIME_FORMAT));
+        return ZonedDateTime.now(ZoneId.of(SerieConstant.STRING_DATE_ZONE))
+                .format(DateTimeFormatter.ofPattern(SerieConstant.STRING_DATE_TIME_FORMAT));
     }
 
     /**
@@ -71,10 +82,10 @@ public class CommonSerie {
      */
     public static String getEnv(String name) throws SerieException {
         if(!isValidString(name))
-            throw new SerieException(StatusEnum.ERROR_ENV);
+            throw new SerieException(SerieStatusEnum.ERROR_ENV);
         String env = System.getenv(name);
         if(!isValidString(env)){
-            throw new SerieException(StatusEnum.ERROR_ENV_NOT_CONTENT);
+            throw new SerieException(SerieStatusEnum.ERROR_ENV_NOT_CONTENT);
         }
         return env;
     }
@@ -113,6 +124,23 @@ public class CommonSerie {
     }
 
     /**
+     * Metodo que permite agregar propiedades a la url tmdb.
+     * @param tmdbUrl
+     * @param properties
+     * @return {@link String[]}
+     */
+    public static String [] addProperties(TMDBUrl tmdbUrl, String ... properties){
+        List<String> propertiesList;
+        if(null == tmdbUrl.getProperties())
+            propertiesList = new ArrayList<>();
+        else
+            propertiesList = Arrays.stream(properties).collect(Collectors.toList());
+        Arrays.stream(properties).forEach(propertiesList::add);
+        tmdbUrl.setProperties(propertiesList.stream().toArray(String[]::new));
+        return tmdbUrl.getProperties();
+    }
+
+    /**
      * Metodo que permite buscar una propiedad por el nombre.
      * @param properties
      * @param name
@@ -121,7 +149,7 @@ public class CommonSerie {
     public static RequestProperty findByNameProperty(List<RequestProperty> properties, String name, boolean isDefault){
         RequestProperty propertyDefault = null;
         if(isDefault)
-            propertyDefault = new RequestProperty(ConstantSerie.STRING_PROPERTY_DEFAULT_NAME, ConstantSerie.STRING_PROPERTY_DEFAULT_VALUE);
+            propertyDefault = new RequestProperty(SerieConstant.STRING_PROPERTY_DEFAULT_NAME, SerieConstant.STRING_PROPERTY_DEFAULT_VALUE);
         if(null == properties || null == name)
             return propertyDefault;
         return properties.stream()
@@ -156,7 +184,7 @@ public class CommonSerie {
      * @param statusEnum
      * @return {@link Response}
      */
-    public static Response buildResponse(Request request, StatusEnum statusEnum){
+    public static Response buildResponse(Request request, SerieStatusEnum statusEnum){
         return buildResponse(request, statusEnum, null);
     }
 
@@ -167,7 +195,7 @@ public class CommonSerie {
      * @param data
      * @return {@link Response}
      */
-    public static Response buildResponse(Request request, StatusEnum statusEnum, Object data){
+    public static Response buildResponse(Request request, SerieStatusEnum statusEnum, Object data){
         return buildResponse(request, statusEnum.getCode(), statusEnum.getMessageBackend(), statusEnum.getMessageFrontend(), data);
     }
 
@@ -184,11 +212,11 @@ public class CommonSerie {
         if(null == request)
             return null;
         if(!isValidString(code,messageBackend, messageFrontend)){
-            code = StatusEnum.ERROR.getCode();
-            messageBackend = StatusEnum.ERROR.getMessageBackend();
-            messageFrontend = StatusEnum.ERROR.getMessageFrontend();
+            code = SerieStatusEnum.ERROR.getCode();
+            messageBackend = SerieStatusEnum.ERROR.getMessageBackend();
+            messageFrontend = SerieStatusEnum.ERROR.getMessageFrontend();
         }
-        String dateTime = CommonSerie.getDateTime();
+        String dateTime = SerieCommon.getDateTime();
         return Response
                 .builder()
                 .traceId(request.getTraceId())
