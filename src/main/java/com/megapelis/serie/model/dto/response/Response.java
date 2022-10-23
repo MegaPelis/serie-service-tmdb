@@ -1,7 +1,11 @@
-package com.megapelis.serie.api.model.dto.response.generic;
+package com.megapelis.serie.model.dto.response;
 
 import lombok.*;
 
+/**
+ * Clase {@link Response}
+ * @author sergio.barrios.
+ */
 @Builder
 @Getter
 @Setter

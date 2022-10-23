@@ -1,9 +1,13 @@
-package com.megapelis.serie.api.model.dto.request.generic;
+package com.megapelis.serie.model.dto.request.generic;
 
 import lombok.*;
 
 import java.io.Serializable;
 
+/**
+ * Clase {@link RequestProperty}
+ * @author sergio.barrios.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

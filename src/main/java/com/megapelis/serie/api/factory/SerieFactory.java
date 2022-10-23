@@ -2,13 +2,11 @@ package com.megapelis.serie.api.factory;
 
 import com.megapelis.serie.api.handler.SerieHandler;
 import com.megapelis.serie.api.handler.impl.*;
-import com.megapelis.serie.api.model.dto.request.generic.Request;
-import com.megapelis.serie.api.model.dto.request.generic.RequestProperty;
-import com.megapelis.serie.api.model.dto.response.generic.Response;
-import com.megapelis.serie.util.CommonSerie;
-import com.megapelis.serie.util.ConstantSerie;
-import com.megapelis.serie.api.model.enums.StatusEnum;
-import com.megapelis.serie.api.model.enums.TypeHandlerEnum;
+import com.megapelis.serie.model.dto.request.generic.Request;
+import com.megapelis.serie.model.dto.response.Response;
+import com.megapelis.serie.model.enums.SerieOperationEnum;
+import com.megapelis.serie.model.enums.SerieStatusEnum;
+import com.megapelis.serie.util.SerieCommon;
 import com.megapelis.serie.util.SerieException;
 
 /**
@@ -26,37 +24,34 @@ public class SerieFactory {
      * @return {@link Response}
      */
     public static Response handler(Request request) {
-        CommonSerie.output(request);
+        SerieCommon.output(request);
         Response response = null;
         SerieHandler handler = null;
         try {
-            CommonSerie.isValidRequest(request);
-            RequestProperty property = CommonSerie.findByNameProperty(request.getProperties(), ConstantSerie.STRING_PROPERTY_TYPE_HANDLER_NAME, ConstantSerie.BOOLEAN_TRUE);
-            switch (TypeHandlerEnum.valueOf(property.getValue())){
-                case FIND_ALL:
-                    handler = new FindAllSerieHandler();
+            SerieCommon.isValidRequest(request);
+            switch (SerieOperationEnum.isValid(request.getOperation())){
+                case FIND_BY_ID:
+                    handler = new FindByIdSerieHandler();
                     break;
-                case FIND_ALL_BY_ID:
-                    handler = new FindAllByIdSerieHandler();
+                case FIND_BY_ID_AND_SEASON:
+                    handler = new FindByIdAndSeasonSerieHandler();
                     break;
-                case FIND_ALL_BY_GENDER:
-                    handler = new FindAllByGenderSerieHandler();
+                case FIND_BY_ID_AND_SEASON_AND_EPISODE:
+                    handler = new FindByIdSeasonAndEpisodeSerieHandler();
                     break;
-                case FIND_ALL_BY_SEASON:
-                    handler = new FindAllBySeasonSerieHandler();
+                case FIND_ALL_BY_POPULAR:
+                    handler = new FindAllByPopularSerieHandler();
                     break;
                 default:
-                    handler = new FindAllBySeasonAndChapterSerieHandler();
+                    response =  SerieCommon.buildResponse(request, SerieStatusEnum.ERROR);
                     break;
             }
-        } catch (IllegalArgumentException exception){
-            response =  CommonSerie.buildResponse(request, StatusEnum.ERROR_SERVICE_OR_OPERATION);
-        }catch (SerieException e) {
-            response =  CommonSerie.buildResponse(request, e.getStatus());
+        } catch (SerieException e) {
+            response =  SerieCommon.buildResponse(request, e.getStatus());
         }
         if(null == response && null != handler)
             response = handler.execute(request);
-        CommonSerie.output(response);
+        SerieCommon.output(response);
         return response;
     }
 }

@@ -1,51 +1,52 @@
 package com.megapelis.serie.api.handler;
 
-import com.megapelis.serie.api.model.dto.request.generic.Request;
-import com.megapelis.serie.api.model.dto.request.generic.RequestProperty;
-import com.megapelis.serie.api.model.dto.response.generic.Response;
-import com.megapelis.serie.api.model.entity.TMDB;
-import com.megapelis.serie.api.tmdb.ITMDBConnection;
-import com.megapelis.serie.api.tmdb.impl.TMDBConnection;
-import com.megapelis.serie.util.CommonSerie;
-import com.megapelis.serie.util.ConstantSerie;
+import com.google.gson.JsonObject;
+import com.megapelis.serie.model.dto.request.generic.Request;
+import com.megapelis.serie.model.dto.response.Response;
+import com.megapelis.serie.model.entity.TMDB;
+import com.megapelis.serie.model.enums.SerieStatusEnum;
+import com.megapelis.serie.util.SerieCommon;
 import com.megapelis.serie.util.SerieException;
 
-public abstract class SerieHandler {
+/**
+ * Clase {@link SerieHandler}
+ * @author sergio.barrios.
+ */
+public abstract class SerieHandler extends SerieGenericCommon {
 
-    protected ITMDBConnection tmdbConnection;
-    protected String method;
-
-    public SerieHandler(){
-        this.tmdbConnection = new TMDBConnection();
-        this.method = ConstantSerie.STRING_TMDB_METHOD_POST;
-    }
-
+    /**
+     * Metodo que permite ejecutar la logica del handler.
+     * @param request
+     * @return {@link Response}
+     */
     public Response execute(Request request){
-        Response response = null;
+        Response response;
         try {
             Object object = validatePayload(request);
+            this.tmdbUrl = buildTMBDUrl();
             String url = url(object);
             TMDB tmdb = tmdb(url);
-            tmdbConnection.execute(tmdb);
+            JsonObject jsonObject = this.tmdb.execute(tmdb);
+            response = SerieCommon.buildResponse(request, SerieStatusEnum.SUCCESS, jsonObject);
         } catch (SerieException exception) {
-            response = CommonSerie.buildResponse(request, exception.getStatus());
+            response = SerieCommon.buildResponse(request, exception.getStatus());
         }
         return response;
     }
 
+    /**
+     * Metodo que permite validar el payload.
+     * @param request
+     * @return {@link Object}
+     * @throws SerieException
+     */
     public abstract Object validatePayload(Request request) throws SerieException;
 
+    /**
+     * Metodo que permite construir la url del servicio.
+     * @param object
+     * @return {@link String}
+     * @throws SerieException
+     */
     public abstract String url(Object object) throws SerieException;
-
-    private TMDB tmdb(String url){
-        TMDB tmdb = TMDB
-                .builder()
-                .url(url)
-                .output(ConstantSerie.BOOLEAN_TMDB_OUTPUT)
-                .method(method)
-                .property(new RequestProperty(ConstantSerie.STRING_TMDB_PROPERTY_CONTENT_TYPE_NAME, ConstantSerie.STRING_TMDB_PROPERTY_CONTENT_TYPE_VALUE))
-                .build();
-        CommonSerie.output(tmdb);
-        return tmdb;
-    }
 }
