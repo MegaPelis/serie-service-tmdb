@@ -13,8 +13,8 @@ import java.util.Arrays;
 @Getter
 public enum SerieOperationEnum {
     FIND_BY_ID("findById"),
-    FIND_BY_ID_AND_SEASON("findAllByIdAndSeason"),
-    FIND_BY_ID_AND_SEASON_AND_EPISODE("findAllByIdAndSeasonAndEpisode"),
+    FIND_BY_ID_AND_SEASON("findByIdAndSeason"),
+    FIND_BY_ID_AND_SEASON_AND_EPISODE("findByIdAndSeasonAndEpisode"),
     FIND_ALL_BY_POPULAR("findAllByPopular");
 
     private String name;

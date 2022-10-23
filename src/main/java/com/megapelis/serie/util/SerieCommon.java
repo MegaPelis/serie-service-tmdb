@@ -9,6 +9,7 @@ import com.megapelis.serie.model.entity.TMDB;
 import com.megapelis.serie.model.entity.TMDBUrl;
 import com.megapelis.serie.model.enums.SerieStatusEnum;
 
+import java.sql.SQLOutput;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -141,24 +142,6 @@ public class SerieCommon {
     }
 
     /**
-     * Metodo que permite buscar una propiedad por el nombre.
-     * @param properties
-     * @param name
-     * @return {@link RequestProperty}
-     */
-    public static RequestProperty findByNameProperty(List<RequestProperty> properties, String name, boolean isDefault){
-        RequestProperty propertyDefault = null;
-        if(isDefault)
-            propertyDefault = new RequestProperty(SerieConstant.STRING_PROPERTY_DEFAULT_NAME, SerieConstant.STRING_PROPERTY_DEFAULT_VALUE);
-        if(null == properties || null == name)
-            return propertyDefault;
-        return properties.stream()
-                .filter(property -> property.getName().equalsIgnoreCase(name))
-                .findFirst()
-                .orElse(propertyDefault);
-    }
-
-    /**
      * Metodo que permite registrar la salida para cloud watch.
      * @param object
      */
@@ -215,6 +198,10 @@ public class SerieCommon {
             code = SerieStatusEnum.ERROR.getCode();
             messageBackend = SerieStatusEnum.ERROR.getMessageBackend();
             messageFrontend = SerieStatusEnum.ERROR.getMessageFrontend();
+        }
+        if(null != data){
+            Gson gson = new Gson();
+            data = gson.toJson(data);
         }
         String dateTime = SerieCommon.getDateTime();
         return Response

@@ -14,7 +14,7 @@ public class SerieConstant {
 
     // Fecha
     public static final String STRING_DATE_ZONE = "America/Bogota";
-    public static final String STRING_DATE_TIME_FORMAT = "yyyy/MM/dd hh.mm.ss";
+    public static final String STRING_DATE_TIME_FORMAT = "yyyy/MM/dd hh:mm:ss";
 
     // Propiedades
     public static final String STRING_PROPERTY_DEFAULT_NAME = "default";
@@ -30,7 +30,7 @@ public class SerieConstant {
     public static final String STRING_ENV_MEGAPELIS_TMDB_KEY_NAME = "MEGAPELIS_TMDB_KEY";
 
     // SERVICIO
-    public static final String STRING_SERVICE_NAME = "Serie";
+    public static final String STRING_SERVICE_NAME = "SerieTMDB";
 
     // TMDB
     public static final boolean BOOLEAN_TMDB_OUTPUT = true;
