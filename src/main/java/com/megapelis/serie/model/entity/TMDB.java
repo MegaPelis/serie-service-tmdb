@@ -1,10 +1,14 @@
-package com.megapelis.serie.api.model.entity;
+package com.megapelis.serie.model.entity;
 
-import com.megapelis.serie.api.model.dto.request.generic.RequestProperty;
+import com.megapelis.serie.model.dto.request.generic.RequestProperty;
 import lombok.*;
 
 import java.io.Serializable;
 
+/**
+ * Clase {@link TMDB}
+ * @author sergio.barrios.
+ */
 @Getter
 @Setter
 @Builder
